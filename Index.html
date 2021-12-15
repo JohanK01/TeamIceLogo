@@ -1,39 +1,85 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>My first three.js app</title>
-		<style>
-			body { margin: 0; }
-		</style>
-	</head>
-	<body>
-		<script src="js/three.js"></script>
-		<script>
-			const scene = new THREE.Scene();
+
+<head>
+    <meta charset="utf-8">
+    <title>My first three.js app</title>
+    <style>
+        body {
+            margin: 0; 
+        }
+    </style>
+</head>
+ 
+<body>
+    <script src="js/three.js"></script>
+	<script src="js/SVGLoader.js"></script>
+    <script>
+       
+            const scene = new THREE.Scene();
 			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
 			const renderer = new THREE.WebGLRenderer();
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
 
-			const geometry = new THREE.BoxGeometry();
-			const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-			const cube = new THREE.Mesh( geometry, material );
-			scene.add( cube );
-
 			camera.position.z = 5;
+            
+        // instantiate a loader
+        const loader = new SVGLoader();
 
-			const animate = function () {
-				requestAnimationFrame( animate );
+        // load a SVG resource
+        loader.load(
+            // resource URL
+            'data/Team_ICE_Logo.svg',
+            // called when the resource is loaded
+            function (data) {
 
-				cube.rotation.x += 0.01;
-				cube.rotation.y += 0.01;
+                const paths = data.paths;
+                const group = new THREE.Group();
 
-				renderer.render( scene, camera );
-			};
+                for (let i = 0; i < paths.length; i++) {
 
-			animate();
-		</script>
-	</body>
+                    const path = paths[i];
+
+                    const material = new THREE.MeshBasicMaterial({
+                        color: path.color,
+                        side: THREE.DoubleSide,
+                        depthWrite: false
+                    });
+
+                    const shapes = SVGLoader.createShapes(path);
+
+                    for (let j = 0; j < shapes.length; j++) {
+
+                        const shape = shapes[j];
+                        const geometry = new THREE.ShapeGeometry(shape);
+                        const mesh = new THREE.Mesh(geometry, material);
+                        group.add(mesh);
+
+                    }
+
+                }
+
+                scene.add(group);
+
+            },
+            // called when loading is in progresses
+            function (xhr) {
+
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+
+            },
+            // called when loading has errors
+            function (error) {
+
+                console.log('An error happened');
+
+            }
+        );
+        
+        
+    </script>
+</body>
+
 </html>
