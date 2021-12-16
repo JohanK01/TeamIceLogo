@@ -1,4 +1,4 @@
-https://github.com/Kasiem024/ThreeJsDemo.git'use strict';
+
 
 console.log('main.js is alive');
 
@@ -10,7 +10,7 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color('white');
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
-camera.position.set(270, 280, 2400);
+camera.position.set(270, 100, 100);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -25,8 +25,8 @@ const animate = function() {
     requestAnimationFrame(animate);
 
     // group.rotation.x += 0.01;
-    // group.rotation.y += 0.01;
-    group.rotation.z += 0.01;
+    group.rotation.y += 0.01;
+    // group.rotation.z += 0.01;
 
     controls.update();
 
@@ -55,7 +55,7 @@ const loader = new SVGLoader();
 // load a SVG resource
 loader.load(
     // resource URL
-    '../images/Team_ICE_Logo.svg',
+    '../images/Team_ICE_Logo3.svg',
     // called when the resource is loaded
     function(data) {
 
